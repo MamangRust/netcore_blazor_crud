@@ -1,0 +1,54 @@
+@page "/itemdetail/update/{itemId:int}"
+@inject MyBlazorClient.Services.IItemService ItemService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+<h3>Edit Item</h3>
+
+@if (item != null)
+{
+    <form @onsubmit="HandleSubmit">
+    <div class="form-group">
+        <label for="itemId">ID:</label>
+        <input type="text" class="form-control" id="itemId" @bind="item.Id" disabled />
+    </div>
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" @bind="item.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    MyBlazorClient.Services.Item item;
+
+    [Parameter]
+    public int itemId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        item = await ItemService.GetItemById(itemId);
+    }
+
+    private async Task HandleSubmit()
+    {
+        var editedItem = await ItemService.EditItem(item.Id, item);
+        if (editedItem != null)
+        {
+            // Redirect to item detail after update
+            NavigationManager.NavigateTo($"/itemdetail/{item.Id}");
+        }
+        else
+        {
+            // Handle update failure scenario
+            // You can show an error message or take appropriate action
+        }
+    }
+}

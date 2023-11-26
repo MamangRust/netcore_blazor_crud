@@ -1,0 +1,31 @@
+@page "/itemdetail/{itemId:int}"
+@inject MyBlazorClient.Services.IItemService ItemService
+
+<h3>Item Detail</h3>
+
+@if (item != null)
+{
+    <dl>
+    <dt>ID:</dt>
+    <dd>@item.Id</dd>
+    <dt>Name:</dt>
+    <dd>@item.Name</dd>
+    <!-- Tambahkan properti lain jika ada -->
+</dl>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    MyBlazorClient.Services.Item item;
+
+    [Parameter]
+    public int itemId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        item = await ItemService.GetItemById(itemId);
+    }
+}

@@ -1,0 +1,40 @@
+@page "/itemdetail/create"
+@inject MyBlazorClient.Services.IItemService ItemService
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+
+<h3>Create Item</h3>
+
+@if (item != null)
+{
+    <form @onsubmit="HandleSubmit">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" @bind="item.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    MyBlazorClient.Services.Item item = new MyBlazorClient.Services.Item();
+
+    private async Task HandleSubmit()
+    {
+        var createdItem = await ItemService.CreateItem(item);
+        if (createdItem != null)
+        {
+            // Redirect to item detail after creation
+            NavigationManager.NavigateTo($"/itemdetail/{createdItem.Id}");
+        }
+        else
+        {
+            // Handle creation failure scenario
+            // You can show an error message or take appropriate action
+        }
+    }
+}
